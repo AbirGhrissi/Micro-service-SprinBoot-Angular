@@ -1,0 +1,143 @@
+services:
+  # Service Discovery (Eureka)
+  eureka-discoveryservice:
+    build:
+      context: ./eureka-discoveryservice
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservices-net
+
+  # Configuration Service
+  config-service:
+    build:
+      context: ./config-service
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    depends_on:
+      - eureka-discoveryservice
+    networks:
+      - microservices-net
+
+  # API Gateway
+  gateway-service:
+    build:
+      context: ./gateway-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    depends_on:
+      - eureka-discoveryservice
+      - config-service
+    networks:
+      - microservices-net
+
+  # Authentication Service (H2)
+#  authentificationservice:
+#    build:
+ #     context: ./auth-service
+ #   ports:
+  #    - "8083:8083"
+   # environment:
+    #  - SPRING_PROFILES_ACTIVE=standalone
+     # - SPRING_DATASOURCE_URL=jdbc:h2:mem:authdb
+      #- SPRING_H2_CONSOLE_ENABLED=true
+   # networks:
+    #  - microservices-net
+
+  # Client Service
+  client-service:
+    build:
+      context: ./client-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    depends_on:
+      - eureka-discoveryservice
+      - config-service
+    networks:
+      - microservices-net
+
+  # Produit Service
+  produit-service:
+    build:
+      context: ./produit-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    depends_on:
+      - eureka-discoveryservice
+      - config-service
+    networks:
+      - microservices-net
+
+  # Device Service (Nouveau service)
+  device-service:
+    build:
+      context: ./device-service
+    ports:
+      - "8084:8084"  # Port cohérent avec votre configuration
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:devicedb
+      - SPRING_H2_CONSOLE_ENABLED=true
+    depends_on:
+      - eureka-discoveryservice
+      - config-service
+    networks:
+      - microservices-net
+
+  # Facture Service
+  facture-service:
+    build:
+      context: ./facture-service
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    depends_on:
+      - eureka-discoveryservice
+      - config-service
+    networks:
+      - microservices-net
+
+  # Reglement Service
+  reglement-service:
+    build:
+      context: ./reglement-service
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka
+    depends_on:
+      - eureka-discoveryservice
+      - config-service
+    networks:
+      - microservices-net
+
+  # Frontend Angular
+  frontend:
+    build:
+      context: ./angular-frontend
+    ports:
+      - "4200:80"
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge

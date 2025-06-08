@@ -1,0 +1,21 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /auth
+
+spring:
+  application:
+    name: authentificationservice
+  datasource:
+    url: jdbc:postgresql://db:5432/auth_db
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:yourJwtSecretKeyHere}
+    expiration: ${JWT_EXPIRATION:86400000} # 24h en ms

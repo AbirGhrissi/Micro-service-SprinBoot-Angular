@@ -1,0 +1,14 @@
+server:
+  port: ${PORT:8086}
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-service:8761/eureka/
+  instance:
+    hostname: ${spring.application.name}
+    preferIpAddress: true
+
+spring:
+  cloud:
+    config:
+      uri: http://config-service:8888
