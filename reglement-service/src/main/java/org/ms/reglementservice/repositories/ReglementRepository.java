@@ -1,0 +1,9 @@
+package org.ms.reglementservice.repositories;
+
+import org.ms.reglementservice.entities.Reglement;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+
+public interface ReglementRepository extends JpaRepository<Reglement, Long> {
+    List<Reglement> findByFactureId(Long factureId);
+}
