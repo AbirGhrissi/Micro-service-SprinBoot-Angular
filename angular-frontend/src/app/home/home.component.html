@@ -1,0 +1,71 @@
+<div class="home-container">
+  <header class="header">
+    <h1>Bienvenue dans notre boutique</h1>
+    <div class="header-actions">
+      <div class="search-bar">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Rechercher un produit...">
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Déconnexion
+      </button>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="products-section">
+      <h2>Nos Produits</h2>
+      <div class="products-grid">
+        <mat-card *ngFor="let produit of produitsFiltres" class="product-card">
+          <img mat-card-image [src]="produit.image || 'assets/default-product.png'" [alt]="produit.name">
+          <mat-card-content>
+            <h3>{{ produit.name }}</h3>
+            <p>{{ produit.description || 'Pas de description disponible' }}</p>
+            <p class="price">{{ produit.price | currency:'EUR':'symbol':'1.2-2' }}</p>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="ajouterAuPanier(produit)">
+              <mat-icon>add_shopping_cart</mat-icon>
+              Ajouter
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+
+    <div class="cart-section">
+      <h2>Votre Panier <mat-icon>shopping_cart</mat-icon></h2>
+      <div *ngIf="panier.length === 0" class="empty-cart">
+        Votre panier est vide
+      </div>
+      <div *ngIf="panier.length > 0">
+        <div class="cart-items">
+          <div *ngFor="let item of panier" class="cart-item">
+            <div class="item-info">
+              <h4>{{ item.name }}</h4>
+              <p>{{ item.price | currency:'EUR':'symbol':'1.2-2' }} x {{ item.quantite }}</p>
+            </div>
+            <div class="item-actions">
+              <button mat-icon-button (click)="retirerDuPanier(item.id)">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="quantity">{{ item.quantite }}</span>
+              <button mat-icon-button (click)="ajouterAuPanier(item)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="cart-summary">
+          <h3>Total: {{ total | currency:'EUR':'symbol':'1.2-2' }}</h3>
+          <button mat-raised-button color="accent" class="checkout-btn">
+            Passer commande
+          </button>
+          <button mat-button color="warn" (click)="viderPanier()">
+            Vider le panier
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
